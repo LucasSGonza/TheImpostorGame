@@ -1,6 +1,7 @@
 import { initialThemes } from "@/mock";
 import { Theme } from "@/types";
 import {
+  Alert,
   Box,
   Button,
   Card,
@@ -19,10 +20,11 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+// TODO: adicionar Dialog para confirmar exclusão de tema
 export const ConfigurationPage = () => {
   const navigate = useNavigate();
 
-  const [themes, setThemes] = useState<Theme[]>([]);
+  const [themes, setThemes] = useState<Theme[]>(initialThemes);
   const [themeDialog, setThemeDialog] = useState(false);
   const [editingTheme, setEditingTheme] = useState<Theme | null>(null);
   const [themeName, setThemeName] = useState("");
@@ -95,66 +97,79 @@ export const ConfigurationPage = () => {
       <Box
         sx={{
           display: "flex",
+          flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
           mb: 3,
         }}
       >
         <Typography variant="h4">Temas e Palavras</Typography>
-        <Box>
-          <Button
-            variant="contained"
-            startIcon={<Icon>add</Icon>}
-            onClick={handleAddTheme}
-            sx={{ mr: 1 }}
-          >
-            Novo Tema
-          </Button>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            gap: 1,
+          }}
+        >
           <Button
             variant="outlined"
             onClick={() => navigate("/theimpostorgame/")}
           >
             Voltar
           </Button>
+          <Button
+            variant="contained"
+            startIcon={<Icon>add</Icon>}
+            onClick={handleAddTheme}
+          >
+            Novo Tema
+          </Button>
         </Box>
       </Box>
 
       <List>
-        {themes.map((theme) => (
-          <Card key={theme.id} sx={{ mb: 2 }}>
-            <CardContent>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  mb: 2,
-                }}
-              >
-                <Typography variant="h6">{theme.name}</Typography>
-                <Box>
-                  <IconButton
-                    onClick={() => handleEditTheme(theme)}
-                    color="primary"
-                  >
-                    <Icon>edit</Icon>
-                  </IconButton>
-                  <IconButton
-                    onClick={() => handleDeleteTheme(theme.id)}
-                    color="error"
-                  >
-                    <Icon>delete</Icon>
-                  </IconButton>
+        {themes.length === 0 ? (
+          <Alert severity="warning">
+            Nenhum tema cadastrado. Clique no botão "Novo tema" para criar um.
+          </Alert>
+        ) : (
+          themes.map((theme) => (
+            <Card key={theme.id} sx={{ mb: 2 }}>
+              <CardContent>
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    mb: 2,
+                  }}
+                >
+                  <Typography variant="h6">{theme.name}</Typography>
+                  <Box>
+                    <IconButton
+                      onClick={() => handleEditTheme(theme)}
+                      color="primary"
+                    >
+                      <Icon>edit</Icon>
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handleDeleteTheme(theme.id)}
+                      color="error"
+                    >
+                      <Icon>delete</Icon>
+                    </IconButton>
+                  </Box>
                 </Box>
-              </Box>
-              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-                {theme.words.map((word, idx) => (
-                  <Chip key={idx} label={word} />
-                ))}
-              </Box>
-            </CardContent>
-          </Card>
-        ))}
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                  {theme.words.map((word, idx) => (
+                    <Chip key={idx} label={word} />
+                  ))}
+                </Box>
+              </CardContent>
+            </Card>
+          ))
+        )}
       </List>
 
       <Dialog
@@ -182,7 +197,7 @@ export const ConfigurationPage = () => {
             helperText="Ex: Futebol, Basquete, Vôlei"
           />
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ padding: `8px 24px 16px 0` }}>
           <Button onClick={() => setThemeDialog(false)}>Cancelar</Button>
           <Button onClick={handleSaveTheme} variant="contained">
             Salvar

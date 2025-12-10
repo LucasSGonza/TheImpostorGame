@@ -1,10 +1,8 @@
+import { initialThemes } from "@/mock";
 import { Player, Theme } from "@/types";
 import {
   Box,
   Typography,
-  Stepper,
-  Step,
-  StepLabel,
   Card,
   CardContent,
   TextField,
@@ -20,7 +18,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const NewGamePage = () => {
-  const [themes, setThemes] = useState<Theme[]>([]);
+  //TODO: adicionar store para gerenciar os temas
+  const [themes, setThemes] = useState<Theme[]>(initialThemes);
   const navigate = useNavigate();
 
   // Game setup
@@ -32,19 +31,18 @@ export const NewGamePage = () => {
   );
 
   // Game state
-  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [showWord, setShowWord] = useState(false);
   const [gamePlayers, setGamePlayers] = useState<Player[]>([]);
   const [mainWord, setMainWord] = useState("");
   const [impostorWord, setImpostorWord] = useState("");
 
+  //TODO: remover `useEffect` e adicionar a store para gerenciar o estado do jogo
   useEffect(() => {
-    console.log("currentPlayerIndex mudou:", currentPlayerIndex);
-    console.log("showWord mudou:", showWord);
-    console.log("gamePlayers mudou:", gamePlayers);
-    console.log("mainWord mudou:", mainWord);
-    console.log("impostorWord mudou:", impostorWord);
-  }, [currentPlayerIndex, gamePlayers, impostorWord, mainWord, showWord]);
+    console.log("showWord:", showWord);
+    console.log("gamePlayers:", gamePlayers);
+    console.log("mainWord:", mainWord);
+    console.log("impostorWord:", impostorWord);
+  }, [gamePlayers, impostorWord, mainWord, showWord]);
 
   const handleNumPlayersChange = (num: number) => {
     setNumPlayers(num);
@@ -55,6 +53,7 @@ export const NewGamePage = () => {
     );
   };
 
+  // TODO: revisar func
   const handleStartGame = () => {
     if (!selectedTheme) {
       alert("Selecione um tema!");
@@ -106,7 +105,6 @@ export const NewGamePage = () => {
     }));
 
     setGamePlayers(players);
-    setCurrentPlayerIndex(0);
     setShowWord(false);
     navigate("/theimpostorgame/new-game");
   };
@@ -117,45 +115,40 @@ export const NewGamePage = () => {
         Configuração do Jogo
       </Typography>
 
-      <Stepper activeStep={0} sx={{ mb: 4 }}>
-        <Step>
-          <StepLabel>Jogadores</StepLabel>
-        </Step>
-        <Step>
-          <StepLabel>Tema</StepLabel>
-        </Step>
-        <Step>
-          <StepLabel>Modo</StepLabel>
-        </Step>
-      </Stepper>
-
+      {/* 1 = 8px, 2 = 16px, 3 = 24px, ... */}
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
             Número de Jogadores
           </Typography>
+          {/* Adicionar Tooltip */}
           <TextField
             type="number"
             value={numPlayers}
             onChange={(e) =>
               handleNumPlayersChange(Math.max(3, parseInt(e.target.value) || 3))
             }
-            inputProps={{ min: 3, max: 20 }}
+            slotProps={{
+              htmlInput: {
+                min: 3,
+                max: 10,
+              },
+            }}
             sx={{ mb: 2 }}
           />
 
-          <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+          <Typography variant="h6" sx={{ mb: 2 }}>
             Nomes dos Jogadores
           </Typography>
-          {playerNames.map((name, idx) => (
+          {playerNames.map((name, index) => (
             <TextField
-              key={idx}
+              key={index}
               fullWidth
-              label={`Jogador ${idx + 1}`}
+              label={`Jogador ${index + 1}`}
               value={name}
               onChange={(e) => {
                 const newNames = [...playerNames];
-                newNames[idx] = e.target.value;
+                newNames[index] = e.target.value;
                 setPlayerNames(newNames);
               }}
               sx={{ mb: 2 }}
