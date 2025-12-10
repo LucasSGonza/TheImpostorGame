@@ -1,4 +1,6 @@
-import { initialThemes } from "@/mock";
+import { useAppSelector } from "@/store/hooks";
+import { selectPaths } from "@/store/paths/pathsSlice";
+import { selectThemes } from "@/store/theme/themeSlice";
 import { Player, Theme } from "@/types";
 import {
   Box,
@@ -18,8 +20,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const NewGamePage = () => {
-  //TODO: adicionar store para gerenciar os temas
-  const [themes, setThemes] = useState<Theme[]>(initialThemes);
+  const themes = useAppSelector(selectThemes);
+  const paths = useAppSelector(selectPaths);
   const navigate = useNavigate();
 
   // Game setup
@@ -106,7 +108,7 @@ export const NewGamePage = () => {
 
     setGamePlayers(players);
     setShowWord(false);
-    navigate("/theimpostorgame/new-game");
+    navigate(paths.newGamePath);
   };
 
   return (
@@ -170,7 +172,9 @@ export const NewGamePage = () => {
             <RadioGroup
               value={selectedTheme?.id || ""}
               onChange={(e) => {
-                const theme = themes.find((t) => t.id === e.target.value);
+                const theme = themes.find(
+                  (t) => t.id.toString() === e.target.value
+                );
                 setSelectedTheme(theme || null);
               }}
             >
@@ -215,10 +219,7 @@ export const NewGamePage = () => {
       </Card>
 
       <Box sx={{ display: "flex", gap: 2 }}>
-        <Button
-          variant="outlined"
-          onClick={() => navigate("/theimpostorgame/")}
-        >
+        <Button variant="outlined" onClick={() => navigate(paths.basePath)}>
           Voltar
         </Button>
         <Button variant="contained" onClick={handleStartGame}>

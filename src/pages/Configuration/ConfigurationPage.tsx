@@ -1,4 +1,6 @@
-import { initialThemes } from "@/mock";
+import { useAppSelector } from "@/store/hooks";
+import { selectPaths } from "@/store/paths/pathsSlice";
+import { selectThemes } from "@/store/theme/themeSlice";
 import { Theme } from "@/types";
 import {
   Alert,
@@ -23,22 +25,14 @@ import { useNavigate } from "react-router-dom";
 // TODO: adicionar Dialog para confirmar exclusão de tema
 export const ConfigurationPage = () => {
   const navigate = useNavigate();
+  const storeThemes = useAppSelector(selectThemes);
+  const paths = useAppSelector(selectPaths);
 
-  const [themes, setThemes] = useState<Theme[]>(initialThemes);
+  const [themes, setThemes] = useState<Theme[]>(storeThemes);
   const [themeDialog, setThemeDialog] = useState(false);
   const [editingTheme, setEditingTheme] = useState<Theme | null>(null);
   const [themeName, setThemeName] = useState("");
   const [themeWords, setThemeWords] = useState("");
-
-  //TODO: adicionar carregamento dos temas do localStorage
-  // const stored = localStorage.getItem("impostor_themes");
-  // if (stored) {
-  //   const newTheme = JSON.parse(stored) as Theme[];
-  //   setThemes(newTheme);
-  // } else {
-  //   // Temas iniciais
-  //   localStorage.setItem("impostor_themes", JSON.stringify(initialThemes));
-  // }
 
   const saveThemes = (newThemes: Theme[]) => {
     setThemes(newThemes);
@@ -59,7 +53,7 @@ export const ConfigurationPage = () => {
     setThemeDialog(true);
   };
 
-  const handleDeleteTheme = (themeId: string) => {
+  const handleDeleteTheme = (themeId: number) => {
     const newThemes = themes.filter((t) => t.id !== themeId);
     saveThemes(newThemes);
   };
@@ -82,7 +76,7 @@ export const ConfigurationPage = () => {
       saveThemes(newThemes);
     } else {
       const newTheme: Theme = {
-        id: Date.now().toString(),
+        id: Date.now().valueOf(),
         name: themeName,
         words,
       };
@@ -112,10 +106,7 @@ export const ConfigurationPage = () => {
             gap: 1,
           }}
         >
-          <Button
-            variant="outlined"
-            onClick={() => navigate("/theimpostorgame/")}
-          >
+          <Button variant="outlined" onClick={() => navigate(paths.basePath)}>
             Voltar
           </Button>
           <Button

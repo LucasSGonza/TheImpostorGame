@@ -8,8 +8,6 @@ const NEW_GAME_PATH =
   import.meta.env.VITE_NEW_GAME_PATH || "/theimpostorgame/new-game";
 const GAME_PATH = import.meta.env.VITE_GAME_PATH || "/theimpostorgame/game";
 
-//TODO: adicionar as rotas do jogo na store pegando do .env, assim no projeto apenas pega da store e nao precisa ficar importando toda hora de .env
-
 const WebRouter = () => {
   return (
     <Routes>

@@ -1,5 +1,5 @@
 export interface Theme {
-  id: string;
+  id: number;
   name: string;
   words: string[];
 }

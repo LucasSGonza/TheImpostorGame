@@ -121,7 +121,7 @@
 ### Formato dos Dados
 ```json
 {
-  "id": "1",
+  "id": 1,
   "name": "Esportes",
   "words": ["Futebol", "Basquete", "Vôlei"]
 }
