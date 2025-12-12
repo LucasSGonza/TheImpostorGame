@@ -29,7 +29,7 @@ function App() {
         sx={{
           flex: 1,
           padding: `24px 64px`,
-          bgcolor: "burlywood",
+          background: "linear-gradient(to bottom, #1e3c72, #2a5298)",
         }}
       >
         <WebRouter />

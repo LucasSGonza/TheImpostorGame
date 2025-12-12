@@ -1,12 +1,12 @@
 import { Route, Routes } from "react-router-dom";
 import { ConfigurationPage, GamePage, HomePage, NewGamePage } from "../pages";
 
-const BASE_PATH = import.meta.env.VITE_BASE_URL || "/theimpostorgame";
+const BASE_PATH = import.meta.env.VITE_BASE_URL || "/";
 const CONFIG_PATH =
-  import.meta.env.VITE_CONFIG_PATH || "/theimpostorgame/config";
+  import.meta.env.VITE_CONFIG_PATH || "/config";
 const NEW_GAME_PATH =
-  import.meta.env.VITE_NEW_GAME_PATH || "/theimpostorgame/new-game";
-const GAME_PATH = import.meta.env.VITE_GAME_PATH || "/theimpostorgame/game";
+  import.meta.env.VITE_NEW_GAME_PATH || "/new-game";
+const GAME_PATH = import.meta.env.VITE_GAME_PATH || "/game";
 
 const WebRouter = () => {
   return (
