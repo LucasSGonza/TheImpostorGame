@@ -1,7 +1,7 @@
 import { ButtonCustom } from "@/components";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectPaths } from "@/store/paths/pathsSlice";
-import { selectThemes } from "@/store/theme/themeSlice";
+import { selectThemes, updateTheme } from "@/store/theme/themeSlice";
 import { Theme } from "@/types";
 import {
   Box,
@@ -25,18 +25,18 @@ import { useNavigate } from "react-router-dom";
 // TODO: adicionar Dialog para confirmar exclusão de tema
 export const ConfigurationPage = () => {
   const navigate = useNavigate();
-  const storeThemes = useAppSelector(selectThemes);
+  const themes = useAppSelector(selectThemes);
   const paths = useAppSelector(selectPaths);
+  const dispatch = useAppDispatch();
 
-  const [themes, setThemes] = useState<Theme[]>(storeThemes);
   const [themeDialog, setThemeDialog] = useState(false);
   const [editingTheme, setEditingTheme] = useState<Theme | null>(null);
   const [themeName, setThemeName] = useState("");
   const [themeWords, setThemeWords] = useState("");
 
-  const saveThemes = (newThemes: Theme[]) => {
-    setThemes(newThemes);
+  const updateThemes = (newThemes: Theme[]) => {
     localStorage.setItem("impostor_themes", JSON.stringify(newThemes));
+    dispatch(updateTheme(newThemes));
   };
 
   const handleAddTheme = () => {
@@ -56,7 +56,7 @@ export const ConfigurationPage = () => {
   const handleDeleteTheme = (themeId: number) => {
     if (window.confirm("Deseja realmente excluir este tema?")) {
       const newThemes = themes.filter((t) => t.id !== themeId);
-      saveThemes(newThemes);
+      updateThemes(newThemes);
     }
   };
 
@@ -75,14 +75,14 @@ export const ConfigurationPage = () => {
       const newThemes = themes.map((t) =>
         t.id === editingTheme.id ? { ...t, name: themeName, words } : t
       );
-      saveThemes(newThemes);
+      updateThemes(newThemes);
     } else {
       const newTheme: Theme = {
         id: Date.now().valueOf(),
         name: themeName,
         words,
       };
-      saveThemes([...themes, newTheme]);
+      updateThemes([...themes, newTheme]);
     }
 
     setThemeDialog(false);
