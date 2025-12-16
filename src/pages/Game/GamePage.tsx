@@ -1,3 +1,12 @@
+import danceBreakGif from "/dance-break.gif";
+import niftySmashersGif from "/nifty-smashers-nifty-league.gif";
+import helloKittyGif from "/hello-kiyty-cute.gif";
+import birdDancingGif from "/bird-dancing.gif";
+import emojiDanceGif from "/emoji-dance.gif";
+import penguinGif from "/penguin2.gif";
+import gatitoGif from "/gatito.gif";
+import lilChimpsGif from "/lil-chimps-dance-lil-chimps.gif";
+
 import { ButtonCustom } from "@/components";
 import { selectGameState } from "@/store/game/gameSlice";
 import { useAppSelector } from "@/store/hooks";
@@ -110,20 +119,16 @@ export const GamePage = () => {
                     justifyContent: "center",
                   }}
                 >
+                  <img src={danceBreakGif} alt="dance-break" width="auto" />
                   <img
-                    src="/dance-break.gif"
-                    alt="dance-break"
-                    width={"auto"}
-                  />
-                  <img
-                    src="/nifty-smashers-nifty-league.gif"
+                    src={niftySmashersGif}
                     alt="nifty-smashers-nifty-league"
-                    width={"auto"}
+                    width="auto"
                   />
                   <img
-                    src="/hello-kiyty-cute.gif"
-                    alt="hello-kiyty-cute"
-                    width={"76px"}
+                    src={helloKittyGif}
+                    alt="hello-kitty-cute"
+                    width="76px"
                   />
                 </Box>
                 <Box
@@ -137,22 +142,14 @@ export const GamePage = () => {
                     justifyContent: "center",
                   }}
                 >
+                  <img src={birdDancingGif} alt="bird-dancing" width="76px" />
+                  <img src={emojiDanceGif} alt="emoji-dance" width="76px" />
+                  <img src={penguinGif} alt="penguin" width="76px" />
+                  <img src={gatitoGif} alt="gatito" width="76px" />
                   <img
-                    src="/bird-dancing.gif"
-                    alt="bird-dancing"
-                    width={"76px"}
-                  />
-                  <img
-                    src="/emoji-dance.gif"
-                    alt="emoji-dance"
-                    width={"76px"}
-                  />
-                  <img src="/penguin2.gif" alt="penguin" width={"76px"} />
-                  <img src="/gatito.gif" alt="gatito" width={"76px"} />
-                  <img
-                    src="/lil-chimps-dance-lil-chimps.gif"
+                    src={lilChimpsGif}
                     alt="lil-chimps-dance-lil-chimps"
-                    width={"76px"}
+                    width="76px"
                   />
                 </Box>
               </Box>

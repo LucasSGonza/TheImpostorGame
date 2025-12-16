@@ -22,7 +22,6 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-// TODO: adicionar Dialog para confirmar exclusão de tema
 export const ConfigurationPage = () => {
   const navigate = useNavigate();
   const themes = useAppSelector(selectThemes);

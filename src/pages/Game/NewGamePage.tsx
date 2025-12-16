@@ -18,6 +18,7 @@ import {
   Container,
   Icon,
   Chip,
+  Tooltip,
 } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -168,17 +169,30 @@ export const NewGamePage = () => {
               </Typography>
             </Box>
 
-            <Typography variant="h6" gutterBottom sx={{ mb: 2 }}>
-              Número de Jogadores
-            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 1,
+                alignItems: "center",
+                mb: 2,
+              }}
+            >
+              <Typography variant="h6">Número de Jogadores</Typography>
+              <Tooltip title="Mínimo 3, Máximo 10">
+                <Icon>info</Icon>
+              </Tooltip>
+            </Box>
             <TextField
               type="number"
               value={numPlayers}
-              onChange={(e) =>
-                handleNumPlayersChange(
-                  Math.max(3, parseInt(e.target.value) || 3)
-                )
-              }
+              onChange={(e) => {
+                const value = Number(e.target.value);
+
+                if (Number.isNaN(value) || value < 3 || value > 10) return;
+
+                handleNumPlayersChange(Math.max(3, value || 3));
+              }}
               slotProps={{
                 htmlInput: {
                   min: 3,
