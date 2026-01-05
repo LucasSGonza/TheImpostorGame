@@ -1,3 +1,4 @@
+import { ButtonCustom } from "@/components";
 import { useAppSelector } from "@/store/hooks";
 import { selectPaths } from "@/store/paths/pathsSlice";
 import {
@@ -14,6 +15,17 @@ import { useNavigate } from "react-router-dom";
 export const HomePage = () => {
   const navigate = useNavigate();
   const paths = useAppSelector(selectPaths);
+
+  const handleResetThemes = () => {
+    // Lógica para resetar os temas
+    const lsThemes = localStorage.getItem("impostor_themes");
+    if (lsThemes) {
+      localStorage.removeItem("impostor_themes");
+      alert("Temas resetados para os padrões!");
+    } else {
+      alert("Nenhum tema personalizado encontrado para resetar.");
+    }
+  };
 
   return (
     <Box
@@ -127,13 +139,24 @@ export const HomePage = () => {
           }}
         >
           <CardContent>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                justifyContent: "center",
+              }}
+            >
               <Icon sx={{ color: "white", fontSize: 32 }}>lightbulb</Icon>
-              <Typography sx={{ color: "white", flex: 1 }}>
-                <strong>Dica:</strong> Para restaurar temas padrão, limpe o
-                Local Storage (F12 → Application → Local Storage →
-                "impostor_themes")
+              <Typography sx={{ color: "white" }} variant="body1">
+                <strong>Dica:</strong> Para restaurar temas padrão, clique no
+                botão a seguir
               </Typography>
+              <ButtonCustom
+                buttonRole="secondary"
+                label="Resetar Temas"
+                onClick={handleResetThemes}
+              />
             </Box>
           </CardContent>
         </Card>
