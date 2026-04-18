@@ -13,3 +13,9 @@
 * [ X ] Revisar persistencia dos dados pela 'localStorage'
 * [ X ] Revisar se os dados estao sendo utilizados corretamente via 'store'
 * [  ] Adicionar lib 'react-hook-form'
+
+# 🐛 BUGFIX
+- [X] No celular, é muito complicado aumentar o número de jogadores. Melhorar a experiência nessa função
+- [X] Adicionar opção para selecionar tema aleatório
+- [X] Melhorar performance da pagina ao informar nome dos jogadores
+- [X] Layout da página quebrando no celular

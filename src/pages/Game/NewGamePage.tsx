@@ -1,5 +1,5 @@
 import { ButtonCustom } from "@/components/";
-import { updateGameState } from "@/store/game/gameSlice";
+import { selectGameState, updateGameState } from "@/store/game/gameSlice";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { selectPaths } from "@/store/paths/pathsSlice";
 import { selectThemes } from "@/store/theme/themeSlice";
@@ -20,59 +20,95 @@ import {
   Chip,
   Tooltip,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const NewGamePage = () => {
   const themes = useAppSelector(selectThemes);
   const paths = useAppSelector(selectPaths);
+  const gameState = useAppSelector(selectGameState);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   // Game setup
   const [numPlayers, setNumPlayers] = useState(3);
-  const [playerNames, setPlayerNames] = useState<string[]>(["", "", ""]);
-  const [selectedTheme, setSelectedTheme] = useState<Theme | null>(null);
-  const [gameMode, setGameMode] = useState<"without-word" | "with-word">(
-    "without-word"
+  const [playerNames, setPlayerNames] = useState<string[]>(
+    gameState.players.length > 0
+      ? gameState.players.map((p) => p.name)
+      : ["", "", ""],
   );
+  const [selectedTheme, setSelectedTheme] = useState<Theme | null>(
+    gameState.theme.id !== 0 && !gameState.randomTheme? gameState.theme : null,
+  );
+  const [gameMode, setGameMode] = useState<"without-word" | "with-word">(
+    gameState.mode || "without-word",
+  );
+  const [randomTheme, setRandomTheme] = useState<boolean>(gameState.randomTheme || true);
 
-  const handleNumPlayersChange = (num: number) => {
-    setNumPlayers(num);
+  useEffect(() => {
+    console.log("Game State Updated:", gameState);
+    console.log("randomTheme", randomTheme);
+  }, [gameState, randomTheme]);
+
+  const handleSetPlayerName = (index: number, name: string) => {
+    const newNames = [...playerNames];
+    newNames[index] = name;
+    setPlayerNames(newNames);
+  };
+
+  const handleNumPlayersChange = (add: boolean) => {
+    //Bloqueia abaixar numero de jogares abaixo de 3 e subir acima de 10
+    if (numPlayers === 3 && !add) return;
+    if (numPlayers === 10 && add) return;
+    const value = add ? numPlayers + 1 : numPlayers - 1;
+    setNumPlayers(value);
     setPlayerNames(
-      Array(num)
+      Array(value)
         .fill("")
-        .map((_, i) => playerNames[i] || "")
+        .map((_, i) => playerNames[i] || ""),
     );
   };
 
+  const handleRandomTheme = () => {
+    setRandomTheme(!randomTheme);
+  };
+
   const handleStartGame = () => {
-    if (!selectedTheme) {
-      alert("Selecione um tema!");
-      return;
-    }
+    let gameTheme = selectedTheme;
+
+    console.log("gameTheme", gameTheme);
 
     if (playerNames.some((name) => !name.trim())) {
       alert("Preencha o nome de todos os jogadores!");
       return;
     }
 
-    if (selectedTheme.words.length < 1) {
+    if (randomTheme && (gameTheme === null || gameTheme.id === 0)) {
+      const randomIndex = Math.floor(Math.random() * themes.length);
+      gameTheme = themes[randomIndex];
+    }
+
+    if (!gameTheme) {
+      alert("Selecione um tema!");
+      return;
+    }
+    
+    if (gameTheme.words.length < 1) {
       alert("O tema precisa ter pelo menos 1 palavra!");
       return;
     }
 
     // Selecionar palavra principal
     const mainWordIndex = Math.floor(
-      Math.random() * selectedTheme.words.length
+      Math.random() * gameTheme.words.length,
     );
-    const mainWordSelected = selectedTheme.words[mainWordIndex];
+    const mainWordSelected = gameTheme.words[mainWordIndex];
 
     // Selecionar palavra do impostor (se modo com palavra)
     let impostorWordSelected = "";
     if (gameMode === "with-word") {
-      const availableWords = selectedTheme.words.filter(
-        (_, i) => i !== mainWordIndex
+      const availableWords = gameTheme.words.filter(
+        (_, i) => i !== mainWordIndex,
       );
       if (availableWords.length > 0) {
         impostorWordSelected =
@@ -98,7 +134,8 @@ export const NewGamePage = () => {
       id: Date.now(),
       players: players,
       mode: gameMode,
-      theme: selectedTheme,
+      theme: gameTheme,
+      randomTheme: randomTheme,
     };
     dispatch(updateGameState(gameState));
     navigate(paths.gamePath);
@@ -183,34 +220,44 @@ export const NewGamePage = () => {
                 <Icon>info</Icon>
               </Tooltip>
             </Box>
-            <TextField
-              type="number"
-              value={numPlayers}
-              onChange={(e) => {
-                const value = Number(e.target.value);
-
-                if (Number.isNaN(value) || value < 3 || value > 10) return;
-
-                handleNumPlayersChange(Math.max(3, value || 3));
-              }}
-              slotProps={{
-                htmlInput: {
-                  min: 3,
-                  max: 10,
-                },
-              }}
+            <Box
               sx={{
-                mb: 3,
-                maxWidth: 150,
-                "& .MuiOutlinedInput-root": {
-                  backgroundColor: "rgba(255, 255, 255, 0.9)",
-                  borderRadius: 2,
-                  "& fieldset": {
-                    borderColor: "transparent",
-                  },
-                },
+                display: "flex",
+                flexDirection: "row",
+                gap: 1,
+                alignContent: "center",
               }}
-            />
+            >
+              <Chip
+                label={
+                  <Typography
+                    variant="h5"
+                    fontWeight={700}
+                    display="inline-block"
+                  >
+                    {numPlayers}
+                  </Typography>
+                }
+              />
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: 1,
+                }}
+              >
+                <ButtonCustom
+                  buttonRole="tertiary"
+                  onClick={() => handleNumPlayersChange(true)}
+                  startIcon="arrow_drop_up"
+                />
+                <ButtonCustom
+                  buttonRole="tertiary"
+                  onClick={() => handleNumPlayersChange(false)}
+                  startIcon="arrow_drop_down"
+                />
+              </Box>
+            </Box>
 
             <Typography variant="h6" sx={{ mb: 2 }}>
               Nomes dos Jogadores
@@ -228,11 +275,7 @@ export const NewGamePage = () => {
                   fullWidth
                   placeholder={`Jogador ${index + 1}`}
                   value={name}
-                  onChange={(e) => {
-                    const newNames = [...playerNames];
-                    newNames[index] = e.target.value;
-                    setPlayerNames(newNames);
-                  }}
+                  onChange={(e) => handleSetPlayerName(index, e.target.value)}
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       backgroundColor: "rgba(255, 255, 255, 0.9)",
@@ -283,14 +326,59 @@ export const NewGamePage = () => {
               </Alert>
             ) : (
               <RadioGroup
-                value={selectedTheme?.id || ""}
+                value={selectedTheme?.id || 0}
                 onChange={(e) => {
                   const theme = themes.find(
-                    (t) => t.id.toString() === e.target.value
+                    (t) => t.id.toString() === e.target.value,
                   );
                   setSelectedTheme(theme || null);
                 }}
+                sx={{
+                  gap: 2,
+                }}
               >
+                <Box
+                  key={"random-theme"}
+                  sx={{
+                    backgroundColor: "rgba(255, 255, 255, 0.15)",
+                    backdropFilter: "blur(10px)",
+                    border:
+                      selectedTheme?.id === 0
+                        ? "2px solid white"
+                        : "1px solid rgba(255, 255, 255, 0.3)",
+                    borderRadius: 2,
+                    p: 2,
+                    transition: "all 0.3s ease",
+                    cursor: "pointer",
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 255, 255, 0.25)",
+                      transform: "translateY(-2px)",
+                    },
+                  }}
+                  onClick={handleRandomTheme}
+                >
+                  <FormControlLabel
+                    value={0} // Valor fixo para opção de tema aleatório
+                    control={
+                      <Radio
+                        sx={{
+                          color: "white",
+                          "&.Mui-checked": {
+                            color: "white",
+                          },
+                        }}
+                      />
+                    }
+                    label={"Tema Aleatório"}
+                    sx={{
+                      width: "100%",
+                      margin: 0,
+                      "& .MuiFormControlLabel-label": {
+                        color: "white",
+                      },
+                    }}
+                  />
+                </Box>
                 <Box
                   sx={{
                     display: "grid",
@@ -317,7 +405,10 @@ export const NewGamePage = () => {
                           transform: "translateY(-2px)",
                         },
                       }}
-                      onClick={() => setSelectedTheme(theme)}
+                      onClick={() => {
+                        setSelectedTheme(theme);
+                        setRandomTheme(false);
+                      }}
                     >
                       <FormControlLabel
                         value={theme.id}
@@ -387,7 +478,7 @@ export const NewGamePage = () => {
                   setGameMode(
                     e.target.value === "with-word"
                       ? "with-word"
-                      : "without-word"
+                      : "without-word",
                   )
                 }
               >

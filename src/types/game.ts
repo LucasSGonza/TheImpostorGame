@@ -7,5 +7,6 @@ export interface Game {
   id: number;
   players: Player[];
   theme: Theme;
+  randomTheme: boolean;
   mode: GameMode;
 }

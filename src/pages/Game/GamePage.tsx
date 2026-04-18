@@ -217,7 +217,7 @@ export const GamePage = () => {
                   boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
                 }}
               >
-                <CardContent sx={{ p: 4 }}>
+                <CardContent sx={{ p: 2 }}>
                   {/* Tema */}
                   <Box
                     sx={{
@@ -380,6 +380,7 @@ export const GamePage = () => {
                                 sx={{
                                   fontSize: { xs: "3rem", md: "4rem" },
                                   textShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+                                  overflowWrap: "break-word",
                                 }}
                               >
                                 {currentPlayer.word}

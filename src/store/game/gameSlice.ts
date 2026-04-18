@@ -16,7 +16,8 @@ const initialState: GameState = {
       name: "",
       words: [],
     },
-    mode: "with-word",
+    randomTheme: true,
+    mode: "without-word",
   },
 };
 

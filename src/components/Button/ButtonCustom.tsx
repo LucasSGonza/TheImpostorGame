@@ -1,10 +1,11 @@
 import { Button, Icon, SxProps, Theme } from "@mui/material";
+import { MouseEventHandler } from "react";
 
 interface ButtonCustomProps {
   buttonRole: "primary" | "secondary" | "tertiary";
   label?: string;
   startIcon?: string;
-  onClick?: () => void;
+  onClick?: MouseEventHandler<HTMLButtonElement> | undefined;
 }
 
 export const ButtonCustom = ({
@@ -25,27 +26,27 @@ export const ButtonCustom = ({
           transition: "all 0.3s ease",
         }
       : buttonRole === "secondary"
-      ? {
-          color: "white",
-          borderColor: "rgba(255, 255, 255, 0.5)",
-          borderWidth: 2,
-          fontWeight: 600,
-          "&:hover": {
-            borderColor: "white",
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
-          },
-        }
-      : {
-          color: "white",
-          fontWeight: 600,
-        };
+        ? {
+            color: "white",
+            borderColor: "rgba(255, 255, 255, 0.5)",
+            borderWidth: 2,
+            fontWeight: 600,
+            "&:hover": {
+              borderColor: "white",
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+            },
+          }
+        : {
+            color: "white",
+            fontWeight: 600,
+          };
 
   const buttonVariant =
     buttonRole === "primary"
       ? "contained"
       : buttonRole === "secondary"
-      ? "outlined"
-      : "text";
+        ? "outlined"
+        : "text";
 
   return (
     <Button
