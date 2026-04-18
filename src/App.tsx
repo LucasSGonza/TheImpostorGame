@@ -28,7 +28,7 @@ function App() {
         component={"main"}
         sx={{
           flex: 1,
-          padding: `24px 64px`,
+          padding: 3,
           background: "linear-gradient(to bottom, #1e3c72, #2a5298)",
         }}
       >
