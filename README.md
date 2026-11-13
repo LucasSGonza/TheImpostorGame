@@ -2,6 +2,8 @@
 
 > 🚧 Projeto em construção
 
+🌐 **Jogue online:** https://lucassgonza.github.io/TheImpostorGame/
+
 ## 📖 Sobre o Jogo
 
 **O Impostor** é um jogo social de dedução e blefe onde os jogadores devem descobrir quem entre eles é o impostor. O jogo estimula a comunicação, observação e raciocínio lógico dos participantes.
@@ -148,6 +150,25 @@
 - **Vite**: Build tool e dev server
 - **CSS3**: Estilização customizada
 - **LocalStorage API**: Persistência de dados
+
+## 🚀 Deploy
+
+O site é publicado automaticamente no GitHub Pages pelo GitHub Actions a cada push na branch `main` (workflow em `.github/workflows/deploy.yml`). Também é possível disparar o deploy manualmente pela aba **Actions** (`workflow_dispatch`).
+
+- Configuração necessária no repositório: **Settings → Pages → Source: GitHub Actions**.
+- Versão do Node usada no CI: definida em `.nvmrc`.
+
+### Rodando localmente
+
+```bash
+cp .env.example .env   # opcional: os valores padrão já estão no código
+npm install
+npm start              # servidor de desenvolvimento (porta 3000)
+npm run build          # gera a pasta dist/
+npm run preview        # serve o build em http://localhost:4173/TheImpostorGame/
+```
+
+> ⚠️ **Atenção:** tudo que estiver em `dist/` (e, portanto, tudo que for colocado em `public/`, que é copiado para `dist/`) é servido publicamente, inclusive arquivos ocultos (dotfiles) — não conte com filtros do deploy para escondê-los. Variáveis com prefixo `VITE_` também são embutidas no bundle. Nunca coloque segredos nesses lugares.
 
 ## 📱 Compatibilidade
 
